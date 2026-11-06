@@ -3,7 +3,7 @@ import { flushSync } from 'react-dom';
 import { CaseCtx, TABS, type CaseUI, type TabId } from './components/caseContext';
 import { SaveDialog, SettingsDialog } from './components/Dialogs';
 import { EvidenceDrawer, type DrawerTarget } from './components/EvidenceDrawer';
-import { IconDownload, IconExit, IconPrint, IconSettings } from './components/icons';
+import { IconDownload, IconExit, IconPlus, IconPrint, IconSettings } from './components/icons';
 import { Intake, type Draft } from './components/Intake';
 import { Logo } from './components/Logo';
 import { PrintReport } from './components/PrintReport';
@@ -19,9 +19,9 @@ import { keywordScan } from './lib/lexical';
 import { applyAliases, parseTranscript, type Transcript } from './lib/parser';
 import { emptyAnalysis } from './lib/schema';
 import { DEFAULT_SETTINGS, deleteEverything, deleteSaved, listSaved, loadSaved, loadSettings, persistSettings, saveCase, type Settings } from './lib/storage';
+import { EXIT_URL, escapeAction } from './lib/quickExit';
 import { checkQuote } from './lib/verify';
 
-const EXIT_URL = 'https://www.google.com/search?q=weather';
 const SPEAKER_VARS = ['var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)'];
 const emptyDraft = (): Draft => ({ raw: '', fileName: '', context: defaultContext(), aliases: [] });
 
@@ -63,6 +63,8 @@ export function App({ embedded }: { embedded: CaseFile | null }) {
   const [printing, setPrinting] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const lastEsc = useRef(0);
+  const drawerOpen = useRef(false);
+  drawerOpen.current = drawer !== null;
 
   // Appearance
   useEffect(() => {
@@ -95,17 +97,22 @@ export function App({ embedded }: { embedded: CaseFile | null }) {
     window.location.replace(EXIT_URL);
   }, []);
 
-  // Esc twice within a second: quick exit. A single Esc closes the evidence panel.
+  // Esc closes whatever is open first (a dialog, then the evidence panel). Only two presses in a
+  // row with nothing left to close count as the quick exit; a held-down key never does.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
-      const now = Date.now();
-      if (now - lastEsc.current < 1000) {
-        quickExit();
-        return;
-      }
-      lastEsc.current = now;
-      if (!document.querySelector('dialog[open]')) setDrawer(null);
+      const dialogOpen = !!document.querySelector('dialog[open]');
+      const r = escapeAction({
+        last: lastEsc.current,
+        now: Date.now(),
+        repeat: e.repeat,
+        composing: e.isComposing,
+        somethingOpen: dialogOpen || drawerOpen.current || !!document.fullscreenElement,
+      });
+      lastEsc.current = r.last;
+      if (r.action === 'exit') quickExit();
+      else if (r.action === 'close' && !dialogOpen) setDrawer(null);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -297,13 +304,40 @@ export function App({ embedded }: { embedded: CaseFile | null }) {
                 </button>
               </>
             ) : null}
+            {view === 'case' && caseFile ? (
+              <button
+                type="button"
+                className="btn btn-quiet"
+                onClick={() => {
+                  setDrawer(null);
+                  setView('intake');
+                  window.scrollTo({ top: 0 });
+                }}
+                title="Back to the start screen. This analysis stays open until you close the tab."
+              >
+                <IconPlus />
+                <span className="hide-sm">New analysis</span>
+                <span className="visually-hidden show-sm">New analysis</span>
+              </button>
+            ) : null}
             <button type="button" className="btn btn-quiet" onClick={() => setDialog('settings')} aria-label="Settings">
               <IconSettings />
             </button>
-            <button type="button" className="btn exit-btn" onClick={quickExit} title="Leave this page now (or press Esc twice)">
-              <IconExit />
-              Exit
-            </button>
+            <div className="exit-zone">
+              <kbd className="exit-hint hide-sm" aria-hidden="true">
+                Esc Esc
+              </kbd>
+              <button
+                type="button"
+                className="btn exit-btn"
+                onClick={quickExit}
+                title="Safety exit: clears this page and opens a weather search. Shortcut: press Esc twice."
+                aria-label="Quick exit: clear this page and open a weather search"
+              >
+                <IconExit />
+                <span className="exit-label">Quick exit</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
