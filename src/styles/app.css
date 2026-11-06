@@ -417,10 +417,13 @@ textarea {
   top: 64px;
   z-index: 29;
 }
+/* Folder tabs: each tab is a raised card on the navy bar; the open one is the same
+   paper as the page, so it reads as the front folder joined to its contents. */
 .tabs {
   display: flex;
-  gap: 2px;
-  padding: 0 var(--gutter);
+  align-items: flex-end;
+  gap: 6px;
+  padding: 10px var(--gutter) 0;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -429,29 +432,67 @@ textarea {
 }
 .tab {
   appearance: none;
-  border: 0;
-  background: transparent;
-  color: var(--on-navy-2);
-  padding: 12px 14px 13px;
-  font-weight: 600;
-  font-size: var(--t-sm);
-  cursor: pointer;
+  position: relative;
+  flex: none;
+  font-family: var(--font-ui);
+  font-size: var(--t-md);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
   white-space: nowrap;
-  border-bottom: 3px solid transparent;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  color: var(--on-navy);
+  background: var(--navy-2);
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  padding: 12px 22px 13px;
+  margin-top: 6px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 10%);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.15s,
+    margin 0.15s;
 }
 .tab:hover {
-  color: var(--on-navy);
+  background: color-mix(in srgb, var(--navy-2) 82%, #fff);
+  transform: translateY(-2px);
 }
 .tab[aria-selected='true'] {
-  color: var(--on-navy);
-  border-bottom-color: var(--lavender);
+  background: var(--paper);
+  color: var(--ink);
+  border-color: transparent;
+  margin-top: 0;
+  padding-bottom: 19px;
+  transform: none;
+  box-shadow:
+    inset 0 4px 0 var(--lavender-ink),
+    0 -6px 16px rgb(0 0 0 / 22%);
 }
-.tab-num {
-  font-size: var(--t-xs);
-  opacity: 0.75;
+.tab:focus-visible {
+  outline: 3px solid var(--lavender);
+  outline-offset: -5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+  .tab:hover {
+    transform: none;
+  }
+}
+@media (max-width: 760px) {
+  .tabs {
+    gap: 4px;
+    padding-top: 8px;
+  }
+  .tab {
+    font-size: var(--t-sm);
+    padding: 10px 14px 11px;
+  }
+  .tab[aria-selected='true'] {
+    padding-bottom: 15px;
+  }
 }
 
 /* ───────── Layout ───────── */
