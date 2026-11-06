@@ -12,7 +12,7 @@ export function SafetyNote() {
     <div className="notice notice-safety" role="note">
       <IconShield style={{ color: 'var(--teal-ink)', marginTop: 2 }} />
       <div>
-        <strong>You decide what, if anything, to say.</strong> These are options, not instructions, and none of them assumes it is safe to confront anyone. If you are worried about how someone might react, you don’t have to use any of this. A trained domestic abuse or relationship support service can help you think through next steps and stay safe. Press Esc twice at any time to leave this page quickly.
+        <strong>You decide what, if anything, to say.</strong> These are options, not instructions, and none of them assumes it is safe to confront anyone. If you are worried about how someone might react, you don’t have to use any of this. A trained domestic abuse or relationship support service can help you think through next steps and stay safe. To leave this page quickly, use Quick exit at the top or press Esc twice.
       </div>
     </div>
   );

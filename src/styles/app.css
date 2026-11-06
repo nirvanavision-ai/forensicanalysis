@@ -387,14 +387,27 @@ textarea {
   background: var(--on-navy);
   color: #16213d;
   border-color: var(--on-navy);
+  font-weight: 700;
+  white-space: nowrap;
 }
 .exit-btn:hover {
   background: #fff;
   border-color: #fff;
 }
+.exit-zone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Keep the safety exit clear of the other header buttons so it is never hit by a near miss. */
+  margin-left: 10px;
+  padding-left: 12px;
+  border-left: 1px solid rgb(255 255 255 / 18%);
+}
 .exit-hint {
+  font: inherit;
   font-size: var(--t-xs);
   color: var(--on-navy-2);
+  white-space: nowrap;
 }
 .fiction-badge {
   display: inline-flex;
@@ -1650,6 +1663,19 @@ dialog.dialog::backdrop {
   .app-header-inner {
     gap: 6px;
   }
+  /* The page itself says "Fictional example" in a notice; the header needs the room for its buttons. */
+  .header-case .fiction-badge {
+    display: none;
+  }
+  .header-actions {
+    gap: 2px;
+  }
+  .app-header .btn-quiet {
+    padding: 0 11px;
+  }
+  .exit-btn {
+    padding: 0 14px;
+  }
   .page {
     padding-top: 20px;
   }
@@ -1657,6 +1683,17 @@ dialog.dialog::backdrop {
 @media (max-width: 420px) {
   .hide-xs {
     display: none !important;
+  }
+  .exit-zone {
+    margin-left: 4px;
+    padding-left: 6px;
+  }
+  .app-header .btn-quiet {
+    padding: 0 9px;
+  }
+  .exit-btn {
+    padding: 0 12px;
+    gap: 6px;
   }
   .brand-name {
     display: none;

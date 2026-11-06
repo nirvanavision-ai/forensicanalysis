@@ -325,7 +325,7 @@ export function Intake(props: {
               <li>A full analysis is sent only to Anthropic, with your own key. This page cannot contact any other site.</li>
               <li>No accounts, no tracking, no analytics, and no notifications.</li>
               <li>
-                <strong>Quick exit:</strong> press Esc twice, or use the Exit button. It clears this page and opens a weather search. It does not erase your browser history, so use a private window if that matters.
+                <strong>Quick exit:</strong> use the Quick exit button at the top, or press Esc twice when nothing else is open. It clears this page and opens a weather search. To go back to the start screen instead, use New analysis or the Subtext logo. It does not erase your browser history, so use a private window if that matters.
               </li>
             </ul>
           </div>

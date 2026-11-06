@@ -40,7 +40,7 @@ Any quote opens the evidence panel with the surrounding turns. Printing (or savi
 - No accounts, analytics, tracking or notifications. The page's content security policy allows network connections only to `api.anthropic.com`.
 - Your API key is never included in downloaded files.
 - Names can be replaced with aliases on your device before anything is sent; replacements are disclosed in the report.
-- **Quick exit:** press Esc twice, or use the Exit button. It clears the page and opens a weather search. It does not erase your browser history, so use a private window if that matters.
+- **Quick exit:** use the Quick exit button, or press Esc twice when no dialog or panel is open (an Esc that closes something, or a held-down key, never counts). It clears the page and opens a weather search. To go back to the start screen instead, use New analysis. It does not erase your browser history, so use a private window if that matters.
 - **Delete everything** (Settings) removes every analysis, setting and remembered key Subtext stored in the browser.
 - A discreet tab option shows "Notes" and a plain icon instead of Subtext.
 
