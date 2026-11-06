@@ -328,7 +328,6 @@ export function App({ embedded }: { embedded: CaseFile | null }) {
                   }}
                   onKeyDown={(e) => onTabKey(e, i)}
                 >
-                  <span className="tab-num">{i + 1}</span>
                   {t.label}
                 </button>
               ))}
