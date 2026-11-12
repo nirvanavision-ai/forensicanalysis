@@ -134,7 +134,7 @@ export function SettingsDialog(props: {
         <div className="panel panel-tight panel-wash">
           <strong className="small">Delete everything Subtext saved on this device</strong>
           <p className="xs muted" style={{ margin: '4px 0 10px' }}>
-            Removes saved analyses, settings and any remembered key from this browser, and clears the current analysis. Downloaded files are not affected.
+            Removes saved analyses, kept Analysis Room sessions, settings and any remembered key from this browser, and clears the current analysis and any Analysis Room session. Downloaded files are not affected.
           </p>
           <button type="button" className="btn btn-small" onClick={props.onDeleteEverything}>
             <IconTrash /> Delete everything

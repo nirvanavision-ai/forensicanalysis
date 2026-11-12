@@ -33,6 +33,7 @@ export function Intake(props: {
   saved: SavedCaseMeta[];
   hasCurrent: boolean;
   onReturn: () => void;
+  onOpenRoom: () => void;
   onDemo: (key: 'throuple' | 'couple') => void;
   onAnalyse: () => void;
   onKeyword: () => void;
@@ -101,6 +102,12 @@ export function Intake(props: {
                 Back to the current analysis
               </button>
             ) : null}
+            <div className="intake-room">
+              <button type="button" className="btn" onClick={props.onOpenRoom}>
+                Open the Analysis Room
+              </button>
+              <span>No transcript? Describe a situation and let a panel of AI perspectives talk it through.</span>
+            </div>
           </div>
           <div className="demo-strip" aria-label="Fictional examples">
             {DEMOS.map((d) => (
