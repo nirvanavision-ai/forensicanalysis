@@ -26,6 +26,15 @@ Download [`forensic_analysis_app.html`](forensic_analysis_app.html) and open it 
 
 Any quote opens the evidence panel with the surrounding turns. Printing (or saving as PDF) produces the full report followed by the complete transcript.
 
+## Analysis Room
+
+A second mode on the start screen for when there is no transcript. You describe a situation in your own words, pick a panel (or let the Moderator pick one), and a panel of AI interpretations of psychology, communication and negotiation writers each give a read through one lens, cross-examine each other, and give a final assessment. The Moderator then writes a Playbook with scripts, boundaries, things to watch for and the strongest dissent.
+
+- It runs in the browser with the same Claude key and model as the main analysis, about three calls per panelist plus two.
+- It works from your account of what happened, so nothing in it is checked against a transcript. The panelists are AI interpretations of published ideas, not the real people, and are labelled that way.
+- Its temperature labels (Healthy, Workable, Strained, Red flag) and 1 to 10 self-rated confidence come from the panel's own format and are opinions of the panel, not findings.
+- Nothing is stored unless you press "Keep on this device". Kept sessions are removed by Delete everything.
+
 ## How it keeps the analysis honest
 
 - **Quotes are verified.** Each cited passage is matched against the transcript, word for word or after normalising punctuation. Anything that does not match is flagged in the interface, not hidden.
@@ -41,7 +50,7 @@ Any quote opens the evidence panel with the surrounding turns. Printing (or savi
 - Your API key is never included in downloaded files.
 - Names can be replaced with aliases on your device before anything is sent; replacements are disclosed in the report.
 - **Quick exit:** use the Quick exit button, or press Esc twice when no dialog or panel is open (an Esc that closes something, or a held-down key, never counts). It clears the page and opens a weather search. To go back to the start screen instead, use New analysis. It does not erase your browser history, so use a private window if that matters.
-- **Delete everything** (Settings) removes every analysis, setting and remembered key Subtext stored in the browser.
+- **Delete everything** (Settings) removes every analysis, Analysis Room session, setting and remembered key Subtext stored in the browser.
 - A discreet tab option shows "Notes" and a plain icon instead of Subtext.
 
 ## Develop
@@ -51,7 +60,7 @@ Requires Node 20.19 or later (or 22.12+).
 ```sh
 npm install
 npm run dev        # local development server
-npm test           # unit tests (parser, quote verification, prompt safety, demos, knowledge base)
+npm test           # unit tests (parser, quote verification, prompt safety, demos, knowledge base, Analysis Room)
 npm run typecheck
 npm run release    # build and refresh forensic_analysis_app.html in the repo root
 ```
@@ -66,6 +75,7 @@ src/
   components/             intake, dialogs, evidence drawer, print report, shared UI
     tabs/                 the five tabs
     charts/               conversation arc, relationship map
+  room/                   the Analysis Room: panel engine, runner, panelists, avatars, brains/*.md
   data/
     knowledgeBase.ts      curated concept cards (merged with research.json)
     sources.ts            bibliography with confirmation status

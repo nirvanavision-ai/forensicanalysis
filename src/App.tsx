@@ -14,13 +14,14 @@ import { Knowledge } from './components/tabs/Knowledge';
 import { Playbook } from './components/tabs/Playbook';
 import { demoCase } from './data/demos';
 import { defaultContext, newId, parseCaseFile, type CaseFile } from './lib/case';
-import { analyseWithClaude, EngineError, type Progress } from './lib/claude';
+import { analyseWithClaude, EngineError, MODELS, type Progress } from './lib/claude';
 import { keywordScan } from './lib/lexical';
 import { applyAliases, parseTranscript, type Transcript } from './lib/parser';
 import { emptyAnalysis } from './lib/schema';
 import { DEFAULT_SETTINGS, deleteEverything, deleteSaved, listSaved, loadSaved, loadSettings, persistSettings, saveCase, type Settings } from './lib/storage';
 import { EXIT_URL, escapeAction } from './lib/quickExit';
 import { checkQuote } from './lib/verify';
+import { Room } from './room/Room';
 
 const SPEAKER_VARS = ['var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)'];
 const emptyDraft = (): Draft => ({ raw: '', fileName: '', context: defaultContext(), aliases: [] });
@@ -50,7 +51,11 @@ export function App({ embedded }: { embedded: CaseFile | null }) {
   const [settings, setSettings] = useState<Settings>(initial.settings);
   const [apiKey, setApiKey] = useState(initial.apiKey);
   const [caseFile, setCaseFile] = useState<CaseFile | null>(embedded);
-  const [view, setView] = useState<'intake' | 'case'>(embedded ? 'case' : 'intake');
+  const [view, setView] = useState<'intake' | 'case' | 'room'>(embedded ? 'case' : 'intake');
+  // The Analysis Room stays mounted once opened, so a running session survives a trip to the start
+  // screen. Its key changes on "Delete everything" to clear it.
+  const [roomOpened, setRoomOpened] = useState(false);
+  const [roomKey, setRoomKey] = useState(0);
   const [tab, setTab] = useState<TabId>('briefing');
   const [drawer, setDrawer] = useState<DrawerTarget | null>(null);
   const [selectedTurn, setSelectedTurn] = useState<string | null>(null);
@@ -280,7 +285,15 @@ export function App({ embedded }: { embedded: CaseFile | null }) {
       </a>
       <header className="app-header">
         <div className="app-header-inner">
-          <button type="button" className="brand" onClick={() => setView('intake')} aria-label="Subtext home">
+          <button
+            type="button"
+            className="brand"
+            onClick={() => {
+              setView('intake');
+              window.scrollTo({ top: 0 });
+            }}
+            aria-label="Subtext home"
+          >
             <Logo size={32} />
             <span className="brand-name">Subtext</span>
           </button>
@@ -288,6 +301,11 @@ export function App({ embedded }: { embedded: CaseFile | null }) {
             <div className="header-case">
               <span className="header-case-title hide-sm">{caseFile.title.replace(/ \(fictional[^)]*\)/, '')}</span>
               {caseFile.fictional ? <span className="fiction-badge">Fictional example</span> : null}
+            </div>
+          ) : null}
+          {view === 'room' ? (
+            <div className="header-case">
+              <span className="header-case-title hide-sm">Analysis Room</span>
             </div>
           ) : null}
           <div className="header-actions">
@@ -410,7 +428,7 @@ export function App({ embedded }: { embedded: CaseFile | null }) {
             }}
           />
         </CaseCtx.Provider>
-      ) : (
+      ) : view !== 'room' ? (
         <Intake
           draft={draft}
           setDraft={(d) => {
@@ -424,6 +442,11 @@ export function App({ embedded }: { embedded: CaseFile | null }) {
           saved={saved}
           hasCurrent={!!caseFile}
           onReturn={() => setView('case')}
+          onOpenRoom={() => {
+            setRoomOpened(true);
+            setView('room');
+            window.scrollTo({ top: 0 });
+          }}
           onDemo={(k) => openCase(demoCase(k))}
           onAnalyse={analyse}
           onKeyword={keywordOnly}
@@ -441,7 +464,18 @@ export function App({ embedded }: { embedded: CaseFile | null }) {
           }}
           onImport={importFile}
         />
-      )}
+      ) : null}
+      {roomOpened ? (
+        <Room
+          key={roomKey}
+          hidden={view !== 'room'}
+          apiKey={apiKey}
+          model={settings.model}
+          modelLabel={MODELS.find((m) => m.id === settings.model)?.label ?? settings.model}
+          onOpenSettings={() => setDialog('settings')}
+          toast={setToast}
+        />
+      ) : null}
 
       <SettingsDialog
         open={dialog === 'settings'}
@@ -461,6 +495,8 @@ export function App({ embedded }: { embedded: CaseFile | null }) {
           setCaseFile(null);
           setDrawer(null);
           setDraft(emptyDraft());
+          setRoomKey((k) => k + 1);
+          setRoomOpened(false);
           setView('intake');
           setDialog(null);
           setToast(n ? `Deleted ${n} item${n === 1 ? '' : 's'} Subtext had saved on this device.` : 'Nothing was saved on this device.');
