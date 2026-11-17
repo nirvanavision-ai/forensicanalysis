@@ -26,6 +26,10 @@ Download [`forensic_analysis_app.html`](forensic_analysis_app.html) and open it 
 
 Any quote opens the evidence panel with the surrounding turns. Printing (or saving as PDF) produces the full report followed by the complete transcript.
 
+## Analysis Room
+
+The start screen links to the Analysis Room at https://room.forcecuddle.com. It is a separate app, built and hosted from its own repository (`nirvanavision-ai/analysis-room`), and opens in a new tab. Nothing from Subtext is sent to it.
+
 ## How it keeps the analysis honest
 
 - **Quotes are verified.** Each cited passage is matched against the transcript, word for word or after normalising punctuation. Anything that does not match is flagged in the interface, not hidden.

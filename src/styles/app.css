@@ -1363,6 +1363,21 @@ mark.hl {
   font-size: var(--t-lg);
   max-width: 38ch;
 }
+.intake-room {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgb(255 255 255 / 16%);
+  max-width: 52ch;
+}
+.intake-room span {
+  color: var(--on-navy-2);
+  font-size: var(--t-sm);
+  flex: 1 1 220px;
+}
 .demo-strip {
   display: grid;
   gap: 12px;

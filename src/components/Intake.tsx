@@ -15,6 +15,9 @@ export interface Draft {
   aliases: AliasRule[];
 }
 
+/** The Analysis Room runs as its own site (repo nirvanavision-ai/analysis-room). */
+const ROOM_URL = 'https://room.forcecuddle.com';
+
 const PHASE_TEXT: Record<Progress['phase'], string> = {
   connecting: 'Sending the transcript to Claude…',
   thinking: 'Claude is reading the conversation…',
@@ -101,6 +104,12 @@ export function Intake(props: {
                 Back to the current analysis
               </button>
             ) : null}
+            <div className="intake-room">
+              <a className="btn" href={ROOM_URL} target="_blank" rel="noopener noreferrer">
+                Open the Analysis Room
+              </a>
+              <span>No transcript? Describe a situation and let a panel of AI perspectives talk it through. Opens its own site in a new tab.</span>
+            </div>
           </div>
           <div className="demo-strip" aria-label="Fictional examples">
             {DEMOS.map((d) => (
